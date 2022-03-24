@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="Author" content="Captain Chen">
+    <meta name="Keywords" content="Sudoku">
+    <title>Captain Chen's Web Sudoku</title>
+    <style>
+        body {
+            background-color: #d0e4fe;
+        }
+
+        h1 {
+            color: rgb(0, 140, 255);
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        .button {
+            width: 140px;
+            line-height: 38px;
+            text-align: center;
+            font-weight: bold;
+            font-size: large;
+            color: #ffffff;
+            text-shadow: 1px 1px 1px #333;
+            border-radius: 5px;
+            margin: 0 20px 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button.gray {
+            color: #8c96a0;
+            text-shadow: 1px 1px 1px #fff;
+            border: 1px solid #dce1e6;
+            box-shadow: 0 1px 2px #fff inset, 0 -1px 0 #a8abae inset;
+            background: -webkit-linear-gradient(top, #f2f3f7, #e4e8ec);
+            background: -moz-linear-gradient(top, #f2f3f7, #e4e8ec);
+            background: linear-gradient(top, #f2f3f7, #e4e8ec);
+        }
+
+        .button.red {
+            border: 1px solid #b42323;
+            box-shadow: 0 1px 2px #e99494 inset, 0 -1px 0 #954b4b inset, 0 -2px 3px #e99494 inset;
+            background: -webkit-linear-gradient(top, #d53939, #b92929);
+            background: -moz-linear-gradient(top, #d53939, #b92929);
+            background: linear-gradient(top, #d53939, #b92929);
+        }
+
+        .red:hover {
+            background: -webkit-linear-gradient(top, #eb6f6f, #c83c3c);
+            background: -moz-linear-gradient(top, #eb6f6f, #c83c3c);
+            background: linear-gradient(top, #eb6f6f, #c83c3c);
+        }
+
+        .red:active {
+            top: 1px;
+            box-shadow: 0 1px 3px #5b0505 inset, 0 3px 0 #ffffff00;
+            background: -webkit-linear-gradient(top, #b11a1a, #bf2626);
+            background: -moz-linear-gradient(top, #b11a1a, #bf2626);
+            background: linear-gradient(top, #b11a1a, #bf2626);
+        }
+    </style>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script>
+        function StartGame() {
+            window.location.href = "sudoku.html";
+        }
+        function InputData() {
+            window.location.href = "inputsudo.html";
+        }
+        $(document).ready(function () {
+            $("#play_button").click(StartGame);
+            $("#input_button").click(InputData);
+        });
+    </script>
+</head>
+
+<body>
+    <h1>欢迎来到Captain Chen的网页数独(Sudoku)!</h1>
+    <div align="center">
+        <button id="play_button" type="button" class={{button_type|safe}} {{play_disabled|safe}}>开始游戏</button>
+    </div>
+    <div align="center">
+        <button id="input_button" type="button" class="button red">录入数据</button>
+    </div>
+
+</body>
+
+</html>

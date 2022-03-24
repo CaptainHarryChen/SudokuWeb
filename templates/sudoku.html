@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="Author" content="dxf">
+    <meta name="Keywords" content="Sudoku">
+    <title>Sudoku</title>
+    <script src="{{url_for('static', filename='jquery-3.6.0.min.js')}}"></script>
+    <style type=text/css>
+        table {
+            border: 2px solid black
+        }
+
+        td {
+            width: 10mm;
+            height: 10mm;
+            text-align: center;
+            font-size: xx-large;
+            background-color: #eeeeee;
+        }
+
+        .rightBolder {
+            border-right: 2px solid black
+        }
+
+        .bottomBolder {
+            border-bottom: 2px solid black
+        }
+
+        .zeroCell {
+            color: rgb(0, 255, 0);
+            font-weight: bold;
+            background-color: rgb(0, 110, 255)
+        }
+
+        .errorCell {
+            color: rgb(255, 187, 0);
+            font-weight: bold;
+            background-color: rgba(255, 0, 0, 0.644)
+        }
+    </style>
+</head>
+
+<body style="width:800px;margin:0px auto;">
+    {{placeContent|safe}}
+    <script type="text/javascript">
+        function check_row(data) {
+            var tag = true;
+            var vis = new Array(10);
+            for (var i = 0; i < 9; i++) {
+                for (var k = 0; k <= 9; k++)
+                    vis[k] = -1;
+                for (var j = 0; j < 9; j++)
+                    if (data[i * 9 + j] != 0) {
+                        if (vis[data[i * 9 + j]] != -1) {
+                            setErrorCell(i * 9 + j);
+                            setErrorCell(vis[data[i * 9 + j]]);
+                            tag = false;
+                        }
+                        vis[data[i * 9 + j]] = i * 9 + j;
+                    }
+            }
+            return tag;
+        }
+        function check_col(data) {
+            var tag = true;
+            var vis = new Array(10);
+            for (var j = 0; j < 9; j++) {
+                for (var k = 0; k <= 9; k++)
+                    vis[k] = -1;
+                for (var i = 0; i < 9; i++)
+                    if (data[i * 9 + j] != 0) {
+                        if (vis[data[i * 9 + j]] != -1) {
+                            setErrorCell(i * 9 + j);
+                            setErrorCell(vis[data[i * 9 + j]]);
+                            tag = false;
+                        }
+                        vis[data[i * 9 + j]] = i * 9 + j;
+                    }
+            }
+            return tag;
+        }
+        function check_diag(data) {
+            var tag = true;
+            var vis = new Array(10);
+            for (var k = 0; k <= 9; k++)
+                vis[k] = -1;
+            for (var i = 0; i < 9; i++)
+                if (data[i * 9 + i] != 0) {
+                    if (vis[data[i * 9 + i]] != -1) {
+                        setErrorCell(i * 9 + i);
+                        setErrorCell(vis[data[i * 9 + i]]);
+                        tag = false;
+                    }
+                    vis[data[i * 9 + i]] = i * 9 + i;
+                }
+            for (var k = 0; k <= 9; k++)
+                vis[k] = -1;
+            for (var i = 0; i < 9; i++) {
+                var j = 8 - i;
+                if (data[i * 9 + j] != 0) {
+                    if (vis[data[i * 9 + j]] != -1) {
+                        setErrorCell(i * 9 + j);
+                        setErrorCell(vis[data[i * 9 + j]]);
+                        tag = false;
+                    }
+                    vis[data[i * 9 + j]] = i * 9 + j;
+                }
+            }
+            return tag;
+        }
+        function check_blk(data) {
+            var tag = true;
+            var vis = new Array(10);
+            for (var i = 0; i < 9; i++) {
+                for (var k = 0; k <= 9; k++)
+                    vis[k] = -1;
+                for (var j = 0; j < 9; j++) {
+                    var x = Math.floor(i / 3) * 3 + Math.floor(j / 3);
+                    var y = (i % 3) * 3 + (j % 3);
+                    var s = x * 9 + y;
+                    if (data[s] != 0) {
+                        if (vis[data[s]] != -1) {
+                            setErrorCell(s);
+                            setErrorCell(vis[data[s]]);
+                            tag = false;
+                        }
+                        vis[data[s]] = s;
+                    }
+                }
+            }
+            return tag;
+        }
+        function reset_cell(data) {
+            $(".input_cell").removeClass("errorCell");
+        }
+        function setErrorCell(id) {
+            x = Math.floor(id / 9); y = id % 9;
+            str = "#input_cell_" + x + y;
+            $(str).addClass("errorCell");
+        }
+        function check_sudo() {
+            var cells = document.getElementsByClassName("input_cell");
+            var data = new Array(81);
+            for (var i = 0; i < 81; i++)
+                data[i] = 0;
+            for (var i = 0; i < cells.length; i++) {
+                var x = parseInt(cells[i].id.slice(-2, -1));
+                var y = parseInt(cells[i].id.slice(-1));
+                var id = x * 9 + y;
+                var t = cells[i].innerHTML;
+                if (t.length > 0)
+                    data[id] = parseInt(t);
+            }
+            reset_cell();
+            var tag = true;
+            if (!check_row(data))
+                tag = false;
+            if (!check_col(data))
+                tag = false;
+            //if (!check_diag(data))
+            //    tag = false;
+            if (!check_blk(data))
+                tag = false;
+            return tag;
+        }
+
+        $(".input_cell").blur(function () {
+            var s = $(this).text();
+            s = s.slice(0, 1);
+            if (s.length > 0 && (isNaN(s) || parseInt(s) == 0)) {
+                $(this).html("");
+                alert("只能输入1~9的数字")
+            }
+            else
+                $(this).html(s);
+            check_sudo();
+        });
+
+    </script>
+</body>
+
+</html>
