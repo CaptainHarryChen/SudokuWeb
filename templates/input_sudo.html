@@ -211,9 +211,6 @@
             //    tag = false;
             if (!check_blk(data))
                 tag = false;
-            for (var i = 0; i < 81; i++)
-                if (data[i] == 0)
-                    tag = false;
             return tag;
         }
 
@@ -237,7 +234,7 @@
         });
 
     </script>
-    <button id="submit_button" type="submit" class="button gray">提交结果</button>
+    <button id="submit_button" type="submit" class="button gray">提交数据</button>
 </body>
 
 </html>
