@@ -62,7 +62,7 @@ def get_data():
             if cellNum == "0":
                 cellNum = ""
                 zeroState = True
-            cellDiv = f"<div class='input_cell' id='input_cell_{i}{j}' contenteditable='{zeroState}' style='max-width:10mm;max-height:10mm;'>{cellNum}</div>"
+            cellDiv = f"<div class='input_cell' id='input_cell_{i}{j}' contenteditable='{zeroState}' style='max-width:10mm;max-height:10mm;overflow:hidden'>{cellNum}</div>"
 
             if j % 3 == 2 and j != 8:
                 rightState = True

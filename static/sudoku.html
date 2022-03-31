@@ -52,6 +52,7 @@
             background: -webkit-linear-gradient(top, #eb6f6f, #c83c3c);
             background: -moz-linear-gradient(top, #eb6f6f, #c83c3c);
             background: linear-gradient(top, #eb6f6f, #c83c3c);
+            cursor: pointer;
         }
 
         .red:active {
@@ -99,7 +100,7 @@
                 $("#sudoku_board").append(ret);
                 $(".input_cell").blur(function () {
                     var s = $(this).text();
-                    s = s.slice(0, 1);
+                    s = s.slice(-1);
                     if (s.length > 0 && (isNaN(s) || parseInt(s) == 0)) {
                         $(this).html("");
                         alert("只能输入1~9的数字")
