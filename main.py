@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 import glob
 import random
 
@@ -22,6 +22,8 @@ sudoku_web = Flask(__name__)
 
 @sudoku_web.route("/")
 def index():
+    print("开始---request.headers:\n\n",request.headers,"结束---request.headers\n")
+
     can_play = check_data()
     if can_play:
         button_type = "\"button red\""
@@ -34,39 +36,7 @@ def index():
 
 @sudoku_web.route("/sudoku.html")
 def sudoku():
-    dataSudoku = GetRandomData()
-
-    tabSudoku = "<table cellpadding='0' cellspacing='0' border='1'>"
-    for i in range(0, 9):
-        tabSudoku += "<tr>"
-        for j in range(0, 9):
-            cellNum = dataSudoku[i*9+j]
-            zeroState = rightState = bottomState = False
-            if cellNum == "0":
-                cellNum = ""
-                zeroState = True
-            cellDiv = f"<div class='input_cell' id='input_cell_{i}{j}' contenteditable='{zeroState}' style='max-width:10mm max-height:10mm'>{cellNum}</div>"
-
-            if j % 3 == 2 and j != 8:
-                rightState = True
-            if i % 3 == 2 and i != 8:
-                bottomState = True
-
-            classValue = ""
-            if zeroState == True:
-                classValue += " zeroCell"
-            if rightState == True:
-                classValue += " rightBolder"
-            if bottomState == True:
-                classValue += " bottomBolder"
-            classValue = classValue.strip()
-            tdType = "<td>"
-            if len(classValue) != 0:
-                tdType = f"<td class='{classValue}'>"
-            tabSudoku += f"{tdType}{cellDiv}</td>"
-        tabSudoku += "</tr>"
-    tabSudoku += "</table>"
-    return render_template("sudoku.html", placeContent=tabSudoku)
+    return sudoku_web.send_static_file("sudoku.html")
 
 
 
@@ -77,8 +47,12 @@ def result():
 
 @sudoku_web.route("/inputsudo.html")
 def input_sudo():
-    dataSudoku = ["0" for i in range(81)]
+    return sudoku_web.send_static_file("input_sudo.html")
 
+
+@sudoku_web.route("/get_data",methods=("POST",))
+def get_data():
+    dataSudoku = GetRandomData()
     tabSudoku = "<table cellpadding='0' cellspacing='0' border='1'>"
     for i in range(0, 9):
         tabSudoku += "<tr>"
@@ -88,7 +62,7 @@ def input_sudo():
             if cellNum == "0":
                 cellNum = ""
                 zeroState = True
-            cellDiv = f"<div class='input_cell' id='input_cell_{i}{j}' contenteditable='{zeroState}' style='max-width:10mm max-height:10mm'>{cellNum}</div>"
+            cellDiv = f"<div class='input_cell' id='input_cell_{i}{j}' contenteditable='{zeroState}' style='max-width:10mm;max-height:10mm;'>{cellNum}</div>"
 
             if j % 3 == 2 and j != 8:
                 rightState = True
@@ -109,8 +83,7 @@ def input_sudo():
             tabSudoku += f"{tdType}{cellDiv}</td>"
         tabSudoku += "</tr>"
     tabSudoku += "</table>"
-    return render_template("input_sudo.html", placeContent=tabSudoku)
-
+    return tabSudoku
 
 if __name__ == "__main__":
     sudoku_web.run(host="0.0.0.0", port=80, debug=True)
