@@ -6,7 +6,7 @@
     <meta name="Author" content="Captain Chen">
     <meta name="Keywords" content="Sudoku">
     <title>Captain Chen's Web Sudoku</title>
-    <script src="{{url_for('static', filename='jquery-3.6.0.min.js')}}"></script>
+    <script src="./static/jquery-3.6.0.min.js"></script>
     <style type=text/css>
         table {
             border: 2px solid black
@@ -91,8 +91,32 @@
 </head>
 
 <body style="width:800px;margin:0px auto;">
-    {{placeContent|safe}}
+    <div id="sudoku_board">
+    </div>
     <script type="text/javascript">
+        $(document).ready(function () {
+            $.post("/get_data", function (ret) {
+                $("#sudoku_board").append(ret);
+                $(".input_cell").blur(function () {
+                    var s = $(this).text();
+                    s = s.slice(0, 1);
+                    if (s.length > 0 && (isNaN(s) || parseInt(s) == 0)) {
+                        $(this).html("");
+                        alert("只能输入1~9的数字")
+                    }
+                    else
+                        $(this).html(s);
+                    if (check_sudo()) {
+                        $("#submit_button").removeAttr("disabled");
+                        $("#submit_button").addClass("red").removeClass("gray");
+                    }
+                    else {
+                        $("#submit_button").addClass("gray").removeClass("red");
+                        $("#submit_button").attr("disabled", "disabled");
+                    }
+                });
+            });
+        });
         function check_row(data) {
             var tag = true;
             var vis = new Array(10);
@@ -211,30 +235,14 @@
             //    tag = false;
             if (!check_blk(data))
                 tag = false;
+            for (var i = 0; i < 81; i++)
+                if (data[i] == 0)
+                    tag = false;
             return tag;
         }
 
-        $(".input_cell").blur(function () {
-            var s = $(this).text();
-            s = s.slice(0, 1);
-            if (s.length > 0 && (isNaN(s) || parseInt(s) == 0)) {
-                $(this).html("");
-                alert("只能输入1~9的数字")
-            }
-            else
-                $(this).html(s);
-            if(check_sudo()) {
-                $("#submit_button").removeAttr("disabled");
-                $("#submit_button").addClass("red").removeClass("gray");
-            }
-            else {
-                $("#submit_button").addClass("gray").removeClass("red");
-                $("#submit_button").attr("disabled","disabled");
-            }
-        });
-
     </script>
-    <button id="submit_button" type="submit" class="button gray">提交数据</button>
+    <button id="submit_button" type="submit" class="button gray">提交结果</button>
 </body>
 
 </html>
