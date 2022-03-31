@@ -438,6 +438,11 @@
     </table>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            $(".input_cell").blur(update);
+            $("#submit_button").click(submit_data);
+        });
+
         function check_row(data) {
             var tag = true;
             var vis = new Array(10);
@@ -533,7 +538,7 @@
             str = "#input_cell_" + x + y;
             $(str).addClass("errorCell");
         }
-        function check_sudo() {
+        function getData() {
             var cells = document.getElementsByClassName("input_cell");
             var data = new Array(81);
             for (var i = 0; i < 81; i++)
@@ -546,6 +551,10 @@
                 if (t.length > 0)
                     data[id] = parseInt(t);
             }
+            return data;
+        }
+        function check_sudo() {
+            var data = getData();
             reset_cell();
             var tag = true;
             if (!check_row(data))
@@ -556,10 +565,17 @@
             //    tag = false;
             if (!check_blk(data))
                 tag = false;
+            var cnt = 0;
+            for (var i = 0; i < 81; i++)
+                if (data[i] != 0)
+                    cnt++;
+            if (cnt == 0)
+                tag = false;
             return tag;
         }
 
-        $(".input_cell").blur(function () {
+
+        function update() {
             var s = $(this).text();
             s = s.slice(-1);
             if (s.length > 0 && (isNaN(s) || parseInt(s) == 0)) {
@@ -576,8 +592,15 @@
                 $("#submit_button").addClass("gray").removeClass("red");
                 $("#submit_button").attr("disabled", "disabled");
             }
-        });
-
+        }
+        function submit_data() {
+            var data = getData();
+            $.post("/save_data", { data: data.toString() }, function (ret) {
+                alert(ret);
+                if (ret == "Save Success!")
+                    $(".input_cell").html("");
+            });
+        }
     </script>
     <button id="submit_button" type="submit" class="button gray">提交数据</button>
 </body>

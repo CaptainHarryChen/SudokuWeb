@@ -96,7 +96,7 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
-            $.post("/get_data", function (ret) {
+            $.get("/get_data", function (ret) {
                 $("#sudoku_board").append(ret);
                 $(".input_cell").blur(function () {
                     var s = $(this).text();
@@ -117,6 +117,7 @@
                     }
                 });
             });
+            $("#submit_button").click(finish_game);
         });
         function check_row(data) {
             var tag = true;
@@ -213,7 +214,7 @@
             str = "#input_cell_" + x + y;
             $(str).addClass("errorCell");
         }
-        function check_sudo() {
+        function getData() {
             var cells = document.getElementsByClassName("input_cell");
             var data = new Array(81);
             for (var i = 0; i < 81; i++)
@@ -226,6 +227,10 @@
                 if (t.length > 0)
                     data[id] = parseInt(t);
             }
+            return data;
+        }
+        function check_sudo() {
+            var data = getData();
             reset_cell();
             var tag = true;
             if (!check_row(data))
@@ -240,6 +245,15 @@
                 if (data[i] == 0)
                     tag = false;
             return tag;
+        }
+        function finish_game() {
+            var data = getData();
+            $.post("/finish_game", { data: data.toString() }, function (ret) {
+                if (ret == "Success!")
+                    window.location.href = "winning.html";
+                else
+                    alert("You Cheat!");
+            });
         }
 
     </script>
