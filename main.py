@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import glob
 import random
+import sudoku
 
 
 def check_data():
@@ -22,7 +23,7 @@ sudoku_web = Flask(__name__)
 
 @sudoku_web.route("/")
 def index():
-    print("开始---request.headers:\n\n",request.headers,"结束---request.headers\n")
+    print("开始---request.headers:\n\n", request.headers, "结束---request.headers\n")
 
     can_play = check_data()
     if can_play:
@@ -35,12 +36,11 @@ def index():
 
 
 @sudoku_web.route("/sudoku.html")
-def sudoku():
+def sudoku_play():
     return sudoku_web.send_static_file("sudoku.html")
 
 
-
-@sudoku_web.route("/sudoku_result.html",methods=["post"])
+@sudoku_web.route("/sudoku_result.html", methods=["post"])
 def result():
     pass
 
@@ -50,7 +50,7 @@ def input_sudo():
     return sudoku_web.send_static_file("input_sudo.html")
 
 
-@sudoku_web.route("/get_data",methods=("POST",))
+@sudoku_web.route("/get_data", methods=("GET",))
 def get_data():
     dataSudoku = GetRandomData()
     tabSudoku = "<table cellpadding='0' cellspacing='0' border='1'>"
@@ -84,6 +84,35 @@ def get_data():
         tabSudoku += "</tr>"
     tabSudoku += "</table>"
     return tabSudoku
+
+
+@sudoku_web.route("/save_data", methods=("POST",))
+def save_data():
+    dataSudoku = request.form["data"]
+    dataSudoku = dataSudoku.split(",")
+    data = ""
+    for c in dataSudoku:
+        data += c
+    with open("data\\sudoku.data", "a", encoding="utf-8") as f:
+        f.write(data+"\n")
+
+    return "Save Success!"
+
+
+@sudoku_web.route("/finish_game",methods=("POST",))
+def finish_game():
+    dataSudoku = request.form["data"]
+    dataSudoku = dataSudoku.split(",")
+    data = [int(s) for s in dataSudoku]
+    if sudoku.check(data):
+        return "Success!"
+    return "Fail!"
+
+
+@sudoku_web.route("/winning.html")
+def winning():
+    return sudoku_web.send_static_file("winning.html")
+
 
 if __name__ == "__main__":
     sudoku_web.run(host="0.0.0.0", port=80, debug=True)
