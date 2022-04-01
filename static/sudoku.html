@@ -8,6 +8,10 @@
     <title>Captain Chen's Web Sudoku</title>
     <script src="./static/jquery-3.6.0.min.js"></script>
     <style type=text/css>
+        h1 {
+            color: rgb(0, 140, 255);
+        }
+
         table {
             border: 2px solid black
         }
@@ -92,11 +96,22 @@
 </head>
 
 <body style="width:800px;margin:0px auto;">
+    <h1 id="difficulty">数独难度：</h1>
     <div id="sudoku_board">
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
             $.get("/get_data", function (ret) {
+                diff=parseInt(ret[0]);
+                if(diff==1)
+                    $("#difficulty").html("数独难度：简单");
+                else if(diff==2)
+                    $("#difficulty").html("数独难度：中等");
+                else if(diff==3)
+                    $("#difficulty").html("数独难度：困难");
+                else
+                    $("#difficulty").html("数独难度：未知");
+                ret=ret.slice(2);
                 $("#sudoku_board").append(ret);
                 $(".input_cell").blur(function () {
                     var s = $(this).text();

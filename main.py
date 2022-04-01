@@ -53,6 +53,7 @@ def input_sudo():
 @sudoku_web.route("/get_data", methods=("GET",))
 def get_data():
     dataSudoku = GetRandomData()
+    difficulty = sudoku.difficulty(dataSudoku)
     tabSudoku = "<table cellpadding='0' cellspacing='0' border='1'>"
     for i in range(0, 9):
         tabSudoku += "<tr>"
@@ -83,7 +84,7 @@ def get_data():
             tabSudoku += f"{tdType}{cellDiv}</td>"
         tabSudoku += "</tr>"
     tabSudoku += "</table>"
-    return tabSudoku
+    return str(difficulty)+' '+tabSudoku
 
 
 @sudoku_web.route("/save_data", methods=("POST",))
