@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import glob
 import random
 import sudoku
@@ -100,9 +100,10 @@ def save_data():
     return "Save Success!"
 
 
-@sudoku_web.route("/finish_game",methods=("POST",))
+@sudoku_web.route("/finish_game", methods=("POST",))
 def finish_game():
     dataSudoku = request.form["data"]
+    used_time = int(request.form["used_time"])
     dataSudoku = dataSudoku.split(",")
     data = [int(s) for s in dataSudoku]
     if sudoku.check(data):
@@ -110,9 +111,9 @@ def finish_game():
     return "Fail!"
 
 
-@sudoku_web.route("/winning.html")
-def winning():
-    return sudoku_web.send_static_file("winning.html")
+@sudoku_web.route("/winning/<used_time>")
+def winning(used_time=""):
+    return render_template("winning.html", used_time=used_time)
 
 
 if __name__ == "__main__":

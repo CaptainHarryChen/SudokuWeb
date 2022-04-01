@@ -97,21 +97,23 @@
 
 <body style="width:800px;margin:0px auto;">
     <h1 id="difficulty">数独难度：</h1>
+    <h1 id="time">已用时间：0s</h1>
     <div id="sudoku_board">
     </div>
     <script type="text/javascript">
+        var used_time = 0;
         $(document).ready(function () {
             $.get("/get_data", function (ret) {
-                diff=parseInt(ret[0]);
-                if(diff==1)
+                diff = parseInt(ret[0]);
+                if (diff == 1)
                     $("#difficulty").html("数独难度：简单");
-                else if(diff==2)
+                else if (diff == 2)
                     $("#difficulty").html("数独难度：中等");
-                else if(diff==3)
+                else if (diff == 3)
                     $("#difficulty").html("数独难度：困难");
                 else
                     $("#difficulty").html("数独难度：未知");
-                ret=ret.slice(2);
+                ret = ret.slice(2);
                 $("#sudoku_board").append(ret);
                 $(".input_cell").blur(function () {
                     var s = $(this).text();
@@ -133,7 +135,13 @@
                 });
             });
             $("#submit_button").click(finish_game);
+            used_time = 0;
+            setInterval(update_time, 1000);
         });
+        function update_time() {
+            used_time++;
+            $("#time").html("已用时间：" + used_time + "s");
+        }
         function check_row(data) {
             var tag = true;
             var vis = new Array(10);
@@ -263,16 +271,16 @@
         }
         function finish_game() {
             var data = getData();
-            $.post("/finish_game", { data: data.toString() }, function (ret) {
+            $.post("/finish_game", { data: data.toString(), used_time: used_time }, function (ret) {
                 if (ret == "Success!")
-                    window.location.href = "winning.html";
+                    window.location.href = "winning/" + used_time;
                 else
                     alert("You Cheat!");
             });
         }
 
     </script>
-    <button id="submit_button" type="submit" class="button gray">提交结果</button>
+    <button id="submit_button" type="submit" class="button gray" disabled="disabled">提交结果</button>
 </body>
 
 </html>
