@@ -24,9 +24,10 @@ def check_col(data):
         for i in range(9):
             if (data[i * 9 + j] != 0):
                 if (vis[data[i * 9 + j]] != -1):
-                    tag = False          
+                    tag = False
                 vis[data[i * 9 + j]] = i * 9 + j
     return tag
+
 
 def check_diag(data):
     tag = True
@@ -44,7 +45,7 @@ def check_diag(data):
         j = 8 - i
         if (data[i * 9 + j] != 0):
             if (vis[data[i * 9 + j]] != -1):
-                tag = False 
+                tag = False
             vis[data[i * 9 + j]] = i * 9 + j
     return tag
 
@@ -80,3 +81,15 @@ def check(data):
         if i == 0:
             tag = False
     return tag
+
+
+def difficulty(data):
+    cnt = 0
+    for d in data:
+        if d != '0':
+            cnt += 1
+    if cnt <= 10 or cnt >= 70:
+        return 1 # easy
+    if cnt <= 20 or cnt >= 60:
+        return 2 # medium
+    return 3 # hard
