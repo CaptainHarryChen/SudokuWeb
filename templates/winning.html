@@ -6,8 +6,12 @@
     <meta name="Author" content="Captain Chen">
     <meta name="Keywords" content="Sudoku">
     <title>Captain Chen's Web Sudoku</title>
-    <script src="./static/jquery-3.6.0.min.js"></script>
+    <script src="../static/jquery-3.6.0.min.js"></script>
     <style type=text/css>
+        h1 {
+            color: rgb(0, 140, 255);
+        }
+
         .button.red {
             border: 1px solid #b42323;
             box-shadow: 0 1px 2px #e99494 inset, 0 -1px 0 #954b4b inset, 0 -2px 3px #e99494 inset;
@@ -51,14 +55,15 @@
 
 <body style="width:800px;margin:0px auto;">
     <div>
-        <img src="./static/win_img.jpg" alt="你赢了！" />
+        <img src="../static/win_img.jpg" alt="你赢了！" />
     </div>
+    <h1>用时：{{used_time}}s</h1>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#next_game_button").click(next_game);
         });
         function next_game() {
-            window.location.href = "sudoku.html";
+            window.location.href = "/sudoku.html";
         }
 
     </script>
